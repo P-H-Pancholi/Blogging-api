@@ -1,0 +1,15 @@
+CREATE TABLE posts (
+	id serial PRIMARY KEY,
+	title VARCHAR(255) NOT NULL,
+	content TEXT NOT NULL,
+	category VARCHAR(255) NOT NULL,
+	created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+	updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE TABLE tags (
+	id serial PRIMARY KEY,
+	post_id INTEGER NOT NULL,
+	tag VARCHAR(255) NOT NULL,
+	FOREIGN KEY(post_id) REFERENCES posts(id) ON DELETE CASCADE
+);

@@ -2,15 +2,23 @@ package database
 
 import (
 	"context"
+	"os"
 
-	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-func Connect(connURL string) (*pgx.Conn, error) {
-	conn, err := pgx.Connect(context.Background(), connURL)
+type DatabaseConnection struct {
+	DbConn *pgxpool.Pool
+}
+
+var Db DatabaseConnection
+
+func Connect() error {
+	conn, err := pgxpool.New(context.Background(), os.Getenv("CONN_URL"))
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	return conn, nil
+	Db.DbConn = conn
+	return nil
 }

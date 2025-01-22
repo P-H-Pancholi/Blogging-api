@@ -1,12 +1,11 @@
 package main
 
 import (
-	"context"
-	"fmt"
 	"log"
-	"os"
 
 	"github.com/P-H-Pancholi/Blogging-api/pkg/database"
+	"github.com/P-H-Pancholi/Blogging-api/pkg/handlers"
+	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 )
 
@@ -16,18 +15,15 @@ func main() {
 		log.Fatalf("Error loading .env file: %v", err)
 	}
 
-	port := os.Getenv("PORT")
-	dbHost := os.Getenv("DB_HOST")
-	dbUser := os.Getenv("DB_USER")
-	pass := os.Getenv("DB_PASSWORD")
-	dbName := os.Getenv("DB_NAME")
-
-	connURL := fmt.Sprintf("postgresql://%s:%s@%s:%s/%s", dbUser, pass, dbHost, port, dbName)
-
-	conn, err := database.Connect(connURL)
-	if err != nil {
+	if err := database.Connect(); err != nil {
 		log.Fatal("Error connecting database : %w", err)
 	}
 
-	defer conn.Close(context.Background())
+	defer database.Db.DbConn.Close()
+	router := gin.Default()
+	router.GET("/posts", handlers.GetAllPostsHandler)
+	router.POST("/posts", handlers.CreatePostHandler)
+
+	router.Run("localhost:8080")
+
 }
