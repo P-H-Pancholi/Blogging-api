@@ -23,6 +23,7 @@ func main() {
 	router := gin.Default()
 	router.GET("/posts", handlers.GetAllPostsHandler)
 	router.POST("/posts", handlers.CreatePostHandler)
+	router.PUT("/posts/:id", handlers.UpdatePostHandler)
 
 	router.Run("localhost:8080")
 
